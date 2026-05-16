@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator ID Card TKA 2026 - Premium & Profesional</title>
+    <title>Generator ID Card B3 Premium - Luxury Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --card-width: 7cm;
-            --card-height: 11cm;
+            /* Ukuran B3 Landscape */
+            --card-width: 10.5cm;
+            --card-height: 8.5cm;
         }
 
-        /* MEMASTIKAN WARNA TETAP SAMA SAAT DICETAK */
+        /* RESET & PRINT COLOR ADJUST */
         * { 
             box-sizing: border-box; 
             -webkit-print-color-adjust: exact !important; 
@@ -22,9 +23,21 @@
         
         body {
             font-family: 'Poppins', Arial, sans-serif;
-            background-color: #e9ecef;
             margin: 0;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- VIDEO BACKGROUND (Cerah & Jelas) --- */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -10;
+            filter: brightness(1.1) contrast(1.05);
         }
 
         /* --- LAYOUT UTAMA --- */
@@ -32,497 +45,318 @@
             display: flex;
             gap: 25px;
             align-items: flex-start;
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        /* --- DASHBOARD CONTROL (SIDEBAR KIRI) --- */
+        /* --- DASHBOARD CONTROL --- */
         #admin-panel {
             width: 380px;
             flex-shrink: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             position: sticky;
             top: 20px;
             max-height: 95vh;
             overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .creator-credit {
             font-size: 11px;
-            color: #888;
+            color: #1e3c72;
             text-align: right;
             margin-top: -10px;
             margin-bottom: 15px;
             font-style: italic;
+            font-weight: 700;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
+        /* --- STYLING DROPDOWN SIDEBAR --- */
+        details {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
         }
+        summary {
+            padding: 12px 15px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #1e3c72;
+            cursor: pointer;
+            list-style: none;
+            background: rgba(248, 249, 250, 0.8);
+        }
+        details[open] summary { border-bottom: 1px solid #eee; }
+        .details-content { padding: 15px; display: flex; flex-direction: column; gap: 12px; }
 
-        .input-group { display: flex; flex-direction: column; margin-bottom: 5px; }
-        label { font-weight: 600; font-size: 13px; margin-bottom: 4px; color: #444; }
+        .input-group { display: flex; flex-direction: column; }
+        label { font-weight: 600; font-size: 12px; margin-bottom: 4px; color: #333; }
         input, select { 
             padding: 10px 12px; 
             border: 1.5px solid #ddd; 
             border-radius: 8px; 
             font-size: 13px; 
-            font-family: 'Poppins', sans-serif;
-            transition: border-color 0.3s;
+            background: rgba(255,255,255,0.9);
         }
-        input:focus, select:focus { border-color: #007bff; outline: none; }
 
-        .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .guide-list { padding-left: 18px; margin: 0; font-size: 12px; color: #444; line-height: 1.6; }
+
+        .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .btn { 
-            padding: 12px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-family: 'Poppins', sans-serif;
-            color: white; 
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-align: center;
+            padding: 12px; border: none; border-radius: 8px; cursor: pointer; 
+            font-weight: 700; color: white; text-align: center; transition: all 0.3s;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .btn-add { background: linear-gradient(135deg, #11998e, #38ef7d); }
         .btn-print { background: linear-gradient(135deg, #0052d4, #4364f7); }
         .btn-reset { background: linear-gradient(135deg, #cb2d3e, #ef473a); }
 
-        /* --- PREVIEW AREA (KANAN) --- */
-        .main-content {
-            flex-grow: 1;
-            min-height: 100vh;
-        }
+        /* --- PREVIEW AREA --- */
+        .main-content { flex-grow: 1; min-height: 100vh; }
+        #print-area { display: flex; flex-direction: column; gap: 30px; align-items: flex-start; }
 
-        #print-area {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            justify-content: flex-start;
-        }
-
-        /* --- KONTROL PER KARTU --- */
+        /* --- CARD GROUP & CONTROLS --- */
         .card-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
             padding: 15px;
             border-radius: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(255,255,255,0.5);
+            margin-bottom: 20px;
         }
+        .card-controls { display: flex; gap: 10px; background: #fff; padding: 10px; border-radius: 8px; width: fit-content; }
+        .card-faces { display: flex; flex-direction: column; gap: 15px; }
 
-        .card-controls {
-            display: flex;
-            gap: 10px;
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .card-controls select {
-            flex-grow: 1;
-            padding: 8px;
-            font-size: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .card-controls button {
-            background: #ff4d4d;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            padding: 0 15px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .card-controls button:hover { background: #cc0000; }
-
-        .card-faces {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* --- THE CARD DESIGN --- */
+        /* --- ID CARD DESIGN (B3 LANDSCAPE) --- */
         .id-card {
             width: var(--card-width);
             height: var(--card-height);
             position: relative;
             overflow: hidden;
             background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- POLA GUILLOCHE (MICRO-PATTERN) --- */
-        .id-card::before {
-            content: "";
+        /* --- POLA MEWAH (DASH / BINTIK / GUILLOCHE) --- */
+        .luxury-dots {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 4px),
-                repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 4px);
+            background-image: radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px);
+            background-size: 5px 5px;
             z-index: 1;
             pointer-events: none;
         }
 
-        /* --- WATERMARK --- */
-        .watermark {
+        .guilloche-pattern {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 75%;
-            opacity: 0.06;
-            z-index: 2;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 10px),
+                repeating-linear-gradient(-45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 1px, transparent 1px, transparent 10px);
+            z-index: 1;
             pointer-events: none;
-            filter: grayscale(100%);
         }
 
-        /* --- 10 TEMA WARNA --- */
-        .theme-blue { --primary: #1e3c72; --secondary: #2a5298; --accent: #ffcc00; --text-light: #fff; --text-dark: #1e3c72; }
-        .theme-red { --primary: #cb2d3e; --secondary: #ef473a; --accent: #ffd700; --text-light: #fff; --text-dark: #cb2d3e; }
-        .theme-green { --primary: #0f2027; --secondary: #203a43; --accent: #38ef7d; --text-light: #fff; --text-dark: #11998e; }
-        .theme-purple { --primary: #4e54c8; --secondary: #8f94fb; --accent: #ffb88c; --text-light: #fff; --text-dark: #4e54c8; }
-        .theme-orange { --primary: #e65c00; --secondary: #F9D423; --accent: #1e3c72; --text-light: #fff; --text-dark: #e65c00; }
-        .theme-dark { --primary: #141E30; --secondary: #243B55; --accent: #00d2ff; --text-light: #fff; --text-dark: #141E30; }
-        .theme-gold { --primary: #a87b1e; --secondary: #f6d365; --accent: #111; --text-light: #fff; --text-dark: #8c6514; }
-        .theme-cyber { --primary: #fc00ff; --secondary: #00dbde; --accent: #fff; --text-light: #fff; --text-dark: #9100c4; }
-        .theme-tropical { --primary: #ff9a44; --secondary: #fc6076; --accent: #ffe83f; --text-light: #fff; --text-dark: #d63c52; }
-        .theme-mystic { --primary: #134e5e; --secondary: #71b280; --accent: #ffeb3b; --text-light: #fff; --text-dark: #134e5e; }
+        /* 15 TEMA WARNA */
+        .theme-blue { --primary: #1e3c72; --secondary: #2a5298; --accent: #ffcc00; --text-dark: #1e3c72; }
+        .theme-red { --primary: #cb2d3e; --secondary: #ef473a; --accent: #ffd700; --text-dark: #cb2d3e; }
+        .theme-green { --primary: #0f2027; --secondary: #203a43; --accent: #38ef7d; --text-dark: #11998e; }
+        .theme-purple { --primary: #4e54c8; --secondary: #8f94fb; --accent: #ffb88c; --text-dark: #4e54c8; }
+        .theme-orange { --primary: #e65c00; --secondary: #F9D423; --accent: #1e3c72; --text-dark: #e65c00; }
+        .theme-dark { --primary: #141E30; --secondary: #243B55; --accent: #00d2ff; --text-dark: #141E30; }
+        .theme-gold { --primary: #a87b1e; --secondary: #f6d365; --accent: #222; --text-dark: #8c6514; }
+        .theme-cyber { --primary: #fc00ff; --secondary: #00dbde; --accent: #fff; --text-dark: #9100c4; }
+        .theme-tropical { --primary: #ff9a44; --secondary: #fc6076; --accent: #ffe83f; --text-dark: #d63c52; }
+        .theme-mystic { --primary: #134e5e; --secondary: #71b280; --accent: #ffeb3b; --text-dark: #134e5e; }
+        .theme-rose { --primary: #e65245; --secondary: #e43a15; --accent: #f8b500; --text-dark: #e65245; }
+        .theme-ocean { --primary: #00c6ff; --secondary: #0072ff; --accent: #fff; --text-dark: #0052d4; }
+        .theme-forest { --primary: #11998e; --secondary: #38ef7d; --accent: #134e5e; --text-dark: #0b4a3f; }
+        .theme-midnight { --primary: #232526; --secondary: #414345; --accent: #00d2ff; --text-dark: #111; }
+        .theme-sunset { --primary: #f12711; --secondary: #f5af19; --accent: #222; --text-dark: #f12711; }
 
-        /* Background Shapes */
-        .bg-top {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
-            clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
-            z-index: 1;
-        }
+        /* Card Decoration */
+        .bg-top { position: absolute; top: 0; left: 0; width: 100%; height: 35%; background: linear-gradient(135deg, var(--primary), var(--secondary)) !important; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); z-index: 2; }
+        .bg-accent-line { position: absolute; top: 0; left: 0; width: 100%; height: 38%; background-color: var(--accent) !important; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); z-index: 1; }
+        .bg-bottom-circle { position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; background: var(--secondary); opacity: 0.1; border-radius: 50%; z-index: 2; }
+        .watermark { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); width: 50%; opacity: 0.05; z-index: 3; pointer-events: none; }
 
-        .bg-accent-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 53%;
-            background-color: var(--accent) !important;
-            clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
-            z-index: 0;
-        }
+        /* Header */
+        .card-header { position: relative; z-index: 10; text-align: center; padding-top: 10px; color: #fff !important; }
+        .card-header h1 { font-size: 18px; margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+        .card-header p { font-size: 10px; margin: 2px 0 0; font-weight: 600; opacity: 0.9; }
 
-        .bg-bottom {
-            position: absolute;
-            bottom: 0; right: 0; width: 60%; height: 25%;
-            background: linear-gradient(to top left, var(--secondary), transparent) !important;
-            opacity: 0.15;
-            clip-path: circle(70% at 100% 100%);
-            z-index: 1;
-        }
-
-        /* Header & Punch Hole */
-        .card-header {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding-top: 15px;
-            color: var(--text-light) !important;
-        }
+        /* Body Content */
+        .card-body { position: relative; z-index: 15; flex-grow: 1; display: flex; padding: 10px 20px; align-items: center; gap: 20px; }
         
-        .punch-hole {
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 14px;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border: 1px dashed rgba(255,255,255,0.8);
-            border-radius: 10px;
-            z-index: 20;
-        }
-
-        .card-header h1 { font-size: 26px; margin: 0; font-weight: 800; letter-spacing: 1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
-        .card-header p { font-size: 9.5px; margin: 2px 0; font-weight: 600; letter-spacing: 0.5px; opacity: 0.9; }
-
-        /* Content */
-        .content-wrapper {
-            position: relative;
-            z-index: 15;
-            margin-top: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .photo-box {
-            width: 3.2cm;
-            height: 4.2cm;
-            background: #fff !important;
-            border: 3px solid #fff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
-            position: relative;
-            z-index: 15;
-        }
+        .photo-area { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 20; }
+        .photo-box { width: 2.8cm; height: 3.8cm; background: #fff; border: 3px solid #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: hidden; }
         .photo-box img { width: 100%; height: 100%; object-fit: cover; }
-
-        .jabatan-badge {
-            background: var(--text-dark) !important;
-            color: #fff !important;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-            text-align: center;
-            text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transform: translateY(-12px);
-            z-index: 20;
-            border: 2px solid #fff;
-            letter-spacing: 0.5px;
-            max-width: 90%;
+        
+        .jabatan-badge { 
+            background: var(--text-dark); color: #fff; padding: 5px 12px; border-radius: 15px; 
+            font-size: 9px; font-weight: 800; border: 2px solid #fff; 
+            text-transform: uppercase; margin-top: -12px; z-index: 25; box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            max-width: 130px; text-align: center;
         }
 
-        /* Identity */
-        .identity-box {
-            position: relative;
-            z-index: 20;
-            text-align: center;
-            width: 90%;
-            margin: -8px auto 0;
-        }
-
-        .info-name {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text-dark) !important;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            line-height: 1.2;
-        }
-
-        .info-nip {
-            font-size: 10.5px;
-            font-weight: 600;
-            color: #555 !important;
-            background: rgba(0,0,0,0.05);
-            padding: 2px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 4px;
-        }
-
-        .info-id-unik {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--primary) !important;
-            letter-spacing: 0.5px;
-        }
+        .info-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; text-align: left; position: relative; z-index: 20; }
+        .info-name { font-size: 17px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; line-height: 1.2; margin-bottom: 5px; border-left: 4px solid var(--accent); padding-left: 10px; }
+        .info-nip { font-size: 11px; font-weight: 600; color: #444; margin-bottom: 2px; padding-left: 14px; }
+        .info-id-unik { font-size: 10px; font-weight: 700; color: var(--primary); opacity: 0.8; padding-left: 14px; }
 
         /* Footer */
-        .card-footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            z-index: 20;
-            padding: 6px 15px;
-            background: #fff !important;
-            border-top: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .valid-thru {
-            font-size: 8px;
-            font-weight: 700;
-            color: #d9534f !important;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-accent-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary)) !important;
-        }
-
-        .footer-logo-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-
+        .card-footer { position: relative; z-index: 20; padding: 8px 20px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .valid-thru { font-size: 8px; font-weight: 800; color: #d9534f; text-transform: uppercase; letter-spacing: 0.5px; }
+        .footer-logo-area { display: flex; align-items: center; gap: 8px; }
         .custom-logo { height: 26px; width: 26px; object-fit: contain; }
-        .footer-brand { font-size: 8.5px; line-height: 1.2; font-weight: 700; text-align: left; color: #333 !important;}
-        .footer-brand span { font-weight: 500; font-size: 7px; color: #777 !important; }
+        .footer-brand { font-size: 8.5px; font-weight: 700; color: #333; line-height: 1.1; }
 
-        /* --- SISI BELAKANG (BACK CARD) --- */
-        .id-card.back-side {
-            background: #fff;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-
-        .back-side::before { opacity: 0.5; } /* Guilloche lebih tipis di belakang */
-
-        .back-header {
-            text-align: center;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 10;
-        }
-        .back-header h3 { margin: 0; font-size: 14px; font-weight: 800; color: var(--text-dark) !important; }
-        .back-header p { margin: 2px 0 0; font-size: 10px; font-weight: 600; color: #666 !important; }
-
-        .back-content {
-            font-size: 9.5px;
-            line-height: 1.5;
-            color: #333 !important;
-            flex-grow: 1;
-            position: relative;
-            z-index: 10;
-        }
+        /* BACK SIDE */
+        .id-card.back-side { background: #fff; padding: 15px 25px; }
+        .back-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-bottom: 12px; }
+        .back-header h3 { margin: 0; font-size: 14px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; }
+        
+        .back-main { display: flex; gap: 15px; align-items: flex-start; flex-grow: 1; }
+        .back-content { font-size: 10.5px; line-height: 1.6; color: #333; flex-grow: 1; font-weight: 500; }
         .back-content ol { padding-left: 15px; margin: 0; }
-        .back-content li { margin-bottom: 4px; text-align: justify; }
-
-        .qr-placeholder {
-            text-align: center;
-            margin-top: 10px;
-        }
-        .qr-placeholder img { width: 75px; height: 75px; border: 1px solid #eee; padding: 2px; }
-
-        .back-footer {
-            background: var(--primary) !important;
-            color: #fff !important;
-            font-size: 8px;
-            text-align: center;
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: auto;
-            position: relative;
-            z-index: 10;
-            line-height: 1.3;
-        }
+        
+        .qr-placeholder { text-align: center; margin-top: 10px; }
+        .qr-placeholder img { width: 90px; height: 90px; border: 1.5px solid #eee; padding: 4px; background: #fff; border-radius: 5px; }
+        
+        .back-footer { background: var(--primary); color: #fff; font-size: 9px; text-align: center; padding: 8px; border-radius: 6px; margin-top: auto; font-weight: 600; }
 
         /* --- PRINT LOGIC --- */
         @media print {
-            @page {
-                size: A4;
-                margin: 0.5cm;
-            }
-
+            @page { size: A4; margin: 1cm; }
             body { padding: 0; background: none; }
-            
-            #admin-panel, .card-controls { display: none !important; }
+            #admin-panel, #bg-video, .card-controls, .creator-credit { display: none !important; }
             .app-layout { display: block; }
-
-            .card-group {
-                background: none;
-                padding: 0;
-                border: none;
-                margin-bottom: 15px;
+            #print-area { display: block; }
+            
+            .card-group { 
+                background: none; border: none; padding: 0; margin-bottom: 1cm; 
+                page-break-inside: avoid; 
             }
-
-            #print-area {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 15px;
-                justify-content: center;
-                margin: 0 auto;
+            .card-faces { 
+                display: flex; flex-direction: column; gap: 0.5cm; align-items: center; 
             }
-
-            .card-faces {
-                gap: 15px;
-            }
-
-            .id-card {
-                border: 0.1mm solid #ccc;
-                page-break-inside: avoid;
-                box-shadow: none;
-                border-radius: 5px;
-            }
+            .id-card { box-shadow: none; border: 0.1mm solid #bbb; }
         }
 
         @media (max-width: 900px) {
             .app-layout { flex-direction: column; }
             #admin-panel { width: 100%; position: static; max-height: none; }
-            .card-faces { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="background.mp4" type="video/mp4">
+    </video>
+
     <div class="app-layout">
         <div id="admin-panel">
-            <div class="creator-credit">Created by Rohiman Supriyadi</div>
-            <h2 style="margin-top:0; color: #1e3c72; font-weight: 800;">ID Card Generator</h2>
+            <div class="creator-credit">Created By Rohiman Supriyadi</div>
+            <h2 style="margin-top:0; color: #1e3c72; font-weight: 800;">Cetak Kartu Kegiatan</h2>
             
-            <div class="form-grid">
-                <div class="input-group">
-                    <label>Judul Event</label>
-                    <input type="text" id="in-judul" value="TKA 2026">
+            <details>
+                <summary>📖 Panduan Penggunaan</summary>
+                <div class="details-content">
+                    <ol class="guide-list">
+                        <li><b>Data:</b> Isi informasi kegiatan & data personal.</li>
+                        <li><b>Smart Theme:</b> Warna otomatis disesuaikan (Merah: Pimpinan, Biru: IT, Hijau: Pengawas).</li>
+                        <li><b>Pattern:</b> Kartu sudah dilengkapi bintik-bintik (Micro-dots) mewah secara otomatis.</li>
+                        <li><b>Cetak:</b> Ukuran B3 (10.5x8.5 cm), pastikan <b>Background Graphics</b> aktif.</li>
+                    </ol>
                 </div>
-                <div class="input-group">
-                    <label>Tahun Pelajaran</label>
-                    <input type="text" id="in-tahun" value="2025/2026" placeholder="Contoh: 2025/2026">
+            </details>
+
+            <details open>
+                <summary>📍 Informasi Kegiatan</summary>
+                <div class="details-content">
+                    <div class="input-group">
+                        <label>Jenis Kegiatan</label>
+                        <select id="in-kegiatan">
+                            <option value="PSAJ">PSAJ (Penilaian Sumatif Akhir Jenjang)</option>
+                            <option value="PSAT">PSAT (Penilaian Sumatif Akhir Tahun)</option>
+                            <option value="TKA">TKA (Tes Kemampuan Akademik)</option>
+                            <option value="SPMB" selected>SPMB (Seleksi Penerimaan Murid Baru)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Nama Sekolah</label>
+                        <input type="text" id="in-judul" value="SDN MUARA BAKTI 01">
+                    </div>
+                    <div class="input-group">
+                        <label>Tahun Pelajaran</label>
+                        <input type="text" id="in-tahun" value="2025/2026">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Jabatan</label>
-                    <select id="in-jabatan">
-                        <option value="PENANGGUNG JAWAB">PENANGGUNG JAWAB</option>
-                        <option value="KETUA PANITIA">KETUA PANITIA</option>
-                        <option value="SEKRETARIS">SEKRETARIS</option>
-                        <option value="BENDAHARA">BENDAHARA</option>
-                        <option value="PROKTOR">PROKTOR</option>
-                        <option value="TEKNISI">TEKNISI</option>
-                        <option value="PENGAWAS RUANG">PENGAWAS RUANG</option>
-                        <option value="ANGGOTA">ANGGOTA</option>
-                    </select>
+            </details>
+
+            <details>
+                <summary>👤 Data Personal</summary>
+                <div class="details-content">
+                    <div class="input-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="in-nama" placeholder="ROHIMAN KHAN">
+                    </div>
+                    <div class="input-group">
+                        <label>NIP / No. Identitas</label>
+                        <input type="text" id="in-nip" placeholder="1988XXXXXXXXXXXX">
+                    </div>
+                    <div class="input-group">
+                        <label>Jabatan</label>
+                        <select id="in-jabatan">
+                            <option value="KEPALA SEKOLAH">KEPALA SEKOLAH</option>
+                            <option value="PENANGGUNG JAWAB">PENANGGUNG JAWAB</option>
+                            <option value="KETUA PANITIA">KETUA PANITIA</option>
+                            <option value="SEKRETARIS">SEKRETARIS</option>
+                            <option value="BENDAHARA">BENDAHARA</option>
+                            <option value="PROKTOR UTAMA">PROKTOR UTAMA</option>
+                            <option value="TEKNISI / TIM IT">TEKNISI / TIM IT</option>
+                            <option value="SEKSI KESEKRETARIATAN">SEKSI KESEKRETARIATAN</option>
+                            <option value="SEKSI KONSUMSI">SEKSI KONSUMSI</option>
+                            <option value="SEKSI PERLENGKAPAN">SEKSI PERLENGKAPAN</option>
+                            <option value="PENGAWAS RUANG">PENGAWAS RUANG</option>
+                            <option value="ANGGOTA PANITIA">ANGGOTA PANITIA</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="in-nama" placeholder="ROHIMAN KHAN">
+            </details>
+
+            <details>
+                <summary>🖼️ Media</summary>
+                <div class="details-content">
+                    <div class="input-group">
+                        <label>Foto Panitia (3x4)</label>
+                        <input type="file" id="in-foto" accept="image/*">
+                    </div>
+                    <div class="input-group">
+                        <label>Logo Tutwuri</label>
+                        <input type="file" id="in-logo" accept="image/*">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>NIP</label>
-                    <input type="text" id="in-nip" placeholder="19XXXXXXXXXXXXXX">
-                </div>
-                <div class="input-group">
-                    <label>Foto Panitia</label>
-                    <input type="file" id="in-foto" accept="image/*">
-                </div>
-                <div class="input-group">
-                    <label>Logo Tutwuri/Watermark</label>
-                    <input type="file" id="in-logo" accept="image/*">
-                </div>
-            </div>
+            </details>
 
             <div class="button-group">
-                <button class="btn btn-add" onclick="tambahKartu()">+ Tambahkan ke Daftar</button>
-                <button class="btn btn-print" onclick="window.print()">🖨️ Cetak ID Card</button>
-                <button class="btn btn-reset" onclick="resetDaftar()">🗑️ Bersihkan Daftar</button>
-            </div>
-
-            <div style="text-align:center; font-size: 11px; font-weight: 600; color: #666; margin-top: 20px;">
-                ⚠️ Aktifkan "Background Graphics" saat Print (Ctrl+P).<br>
-                Tahun di ID & Masa Berlaku otomatis mengambil tahun genap/belakang.
+                <button class="btn btn-add" onclick="tambahKartu()">+ Tambahkan Kartu</button>
+                <button class="btn btn-print" onclick="window.print()">🖨️ Cetak (A4)</button>
+                <button class="btn btn-reset" onclick="resetDaftar()">🗑️ Hapus Semua</button>
             </div>
         </div>
 
@@ -536,6 +370,17 @@
         let fotoData = "";
         let logoData = "https://upload.wikimedia.org/wikipedia/commons/9/9c/Logo_Tut_Wuri_Handayani.png";
         let cardCounter = 0;
+
+        const themes = [
+            {val: 'theme-blue', name: 'Biru Samudra'}, {val: 'theme-red', name: 'Merah Delima'},
+            {val: 'theme-green', name: 'Hijau Zamrud'}, {val: 'theme-purple', name: 'Ungu Elegan'},
+            {val: 'theme-orange', name: 'Oranye Senja'}, {val: 'theme-dark', name: 'Gelap Modern'},
+            {val: 'theme-gold', name: 'Emas Premium'}, {val: 'theme-cyber', name: 'Neon Cyberpunk'},
+            {val: 'theme-tropical', name: 'Tropis'}, {val: 'theme-mystic', name: 'Hijau Mistis'},
+            {val: 'theme-rose', name: 'Merah Bara'}, {val: 'theme-ocean', name: 'Biru Laut'},
+            {val: 'theme-forest', name: 'Hutan Rimba'}, {val: 'theme-midnight', name: 'Tengah Malam'},
+            {val: 'theme-sunset', name: 'Matahari Terbenam'}
+        ];
 
         document.getElementById('in-foto').addEventListener('change', function(e) {
             const reader = new FileReader();
@@ -552,30 +397,40 @@
         function tambahKartu() {
             const nama = document.getElementById('in-nama').value;
             const tahunInput = document.getElementById('in-tahun').value;
-            if(!nama) return alert("Mohon isi nama terlebih dahulu.");
+            const jabatan = document.getElementById('in-jabatan').value;
+            const kegiatan = document.getElementById('in-kegiatan').value;
+            
+            if(!nama) return alert("Harap isi nama!");
 
             cardCounter++;
 
-            // LOGIKA: Mengambil tahun belakang (Contoh: 2025/2026 -> 2026)
-            let tahunFinal = tahunInput;
-            if(tahunInput.includes('/')) {
-                const splitTahun = tahunInput.split('/');
-                tahunFinal = splitTahun[1].trim(); // Ambil bagian belakang
-            } else {
-                tahunFinal = tahunInput.trim();
+            let tahunBelakang = tahunInput.includes('/') ? tahunInput.split('/').pop().trim() : tahunInput.trim();
+            const idUnik = `PAN-${kegiatan}-${tahunBelakang}-${String(cardCounter).padStart(3, '0')}`;
+
+            let subTeks = "";
+            switch(kegiatan) {
+                case "PSAJ": subTeks = "PENILAIAN SUMATIF AKHIR JENJANG"; break;
+                case "PSAT": subTeks = "PENILAIAN SUMATIF AKHIR TAHUN"; break;
+                case "TKA": subTeks = "TES KEMAMPUAN AKADEMIK"; break;
+                case "SPMB": subTeks = "SELEKSI PENERIMAAN MURID BARU"; break;
             }
-            
-            // Format ID Panitia menggunakan tahun belakang
-            const idUnik = `PAN-TKA-${tahunFinal}-${String(cardCounter).padStart(3, '0')}`;
+
+            // SMART THEME
+            let temaOtomatis = 'theme-purple'; 
+            if (["KEPALA SEKOLAH", "PENANGGUNG JAWAB", "KETUA PANITIA"].includes(jabatan)) temaOtomatis = 'theme-red';
+            else if (["PROKTOR UTAMA", "TEKNISI / TIM IT"].includes(jabatan)) temaOtomatis = 'theme-blue';
+            else if (["PENGAWAS RUANG"].includes(jabatan)) temaOtomatis = 'theme-green';
 
             const data = {
                 id: cardCounter,
                 idUnik: idUnik,
+                kegiatan: kegiatan,
                 judul: document.getElementById('in-judul').value,
-                tahunFull: tahunInput, // Untuk Header (2025/2026)
-                tahunMasa: tahunFinal, // Untuk ID & Masa Berlaku (2026)
-                jabatan: document.getElementById('in-jabatan').value,
-                tema: 'theme-blue',
+                subTeks: subTeks,
+                tahunFull: tahunInput,
+                tahunMasa: tahunBelakang,
+                jabatan: jabatan,
+                tema: temaOtomatis,
                 nama: nama,
                 nip: document.getElementById('in-nip').value || '-',
                 foto: fotoData || "https://via.placeholder.com/300x400/eeeeee/888888?text=FOTO",
@@ -583,112 +438,65 @@
 
             listData.push(data);
             renderKartu();
-            
             document.getElementById('in-nama').value = ""; 
-            document.getElementById('in-nip').value = ""; 
         }
 
         function renderKartu() {
             const container = document.getElementById('print-area');
             container.innerHTML = "";
 
-            const themes = [
-                {val: 'theme-blue', name: 'Biru Samudra'},
-                {val: 'theme-red', name: 'Merah Delima'},
-                {val: 'theme-green', name: 'Hijau Zamrud'},
-                {val: 'theme-purple', name: 'Ungu Elegan'},
-                {val: 'theme-orange', name: 'Oranye Senja'},
-                {val: 'theme-dark', name: 'Gelap Modern'},
-                {val: 'theme-gold', name: 'Emas Premium'},
-                {val: 'theme-cyber', name: 'Neon Cyberpunk'},
-                {val: 'theme-tropical', name: 'Tropis'},
-                {val: 'theme-mystic', name: 'Hijau Mistis'}
-            ];
-
             listData.forEach(item => {
-                let optionsHTML = themes.map(t => 
-                    `<option value="${t.val}" ${item.tema === t.val ? 'selected' : ''}>${t.name}</option>`
-                ).join('');
-
-                // QR CODE: Berisi Identitas Panitia
-                const qrContent = encodeURIComponent(`ID: ${item.idUnik}\nNama: ${item.nama}\nJabatan: ${item.jabatan}\nNIP: ${item.nip}`);
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrContent}`;
+                const qrRawData = `VALIDASI PANITIA\nID: ${item.idUnik}\nNama: ${item.nama}\nJabatan: ${item.jabatan}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrRawData)}`;
+                let optionsHTML = themes.map(t => `<option value="${t.val}" ${item.tema === t.val ? 'selected' : ''}>${t.name}</option>`).join('');
 
                 container.innerHTML += `
                     <div class="card-group" id="wrapper-${item.id}">
                         <div class="card-controls">
-                            <select onchange="gantiTemaKartu(${item.id}, this.value)">
-                                ${optionsHTML}
-                            </select>
-                            <button onclick="hapusKartu(${item.id})" title="Hapus Kartu">Hapus</button>
+                            <select onchange="gantiTemaKartu(${item.id}, this.value)">${optionsHTML}</select>
+                            <button onclick="hapusKartu(${item.id})">Hapus</button>
                         </div>
-
                         <div class="card-faces">
-                            <!-- SISI DEPAN -->
+                            <!-- DEPAN B3 LUXURY -->
                             <div class="id-card ${item.tema}" id="front-${item.id}">
-                                <div class="bg-accent-line"></div>
-                                <div class="bg-top"></div>
-                                <div class="bg-bottom"></div>
-                                
-                                <div class="punch-hole"></div>
+                                <div class="luxury-dots"></div>
+                                <div class="guilloche-pattern"></div>
+                                <div class="bg-accent-line"></div><div class="bg-top"></div><div class="bg-bottom-circle"></div>
                                 <img src="${logoData}" class="watermark">
-                                
-                                <div class="card-header">
-                                    <h1>${item.judul}</h1>
-                                    <p>TES KEMAMPUAN AKADEMIK<br>TAHUN PELAJARAN ${item.tahunFull}</p>
-                                </div>
-                                
-                                <div class="content-wrapper">
-                                    <div class="photo-box"><img src="${item.foto}"></div>
-                                    <div class="jabatan-badge">${item.jabatan}</div>
-                                </div>
-
-                                <div class="identity-box">
-                                    <div class="info-name">${item.nama}</div>
-                                    <div class="info-nip">NIP. ${item.nip}</div>
-                                    <div class="info-id-unik">ID: ${item.idUnik}</div>
-                                </div>
-                                
-                                <div class="card-footer">
-                                    <div class="footer-accent-line"></div>
-                                    <div class="valid-thru">Masa Berlaku: Selama TKA ${item.tahunMasa}</div>
-                                    <div class="footer-logo-area">
-                                        <img src="${logoData}" class="custom-logo">
-                                        <div class="footer-brand">
-                                            KEMENTERIAN PENDIDIKAN<br>
-                                            <span>Panitia Pelaksana TKA Pusat</span>
-                                        </div>
+                                <div class="card-header"><h1>${item.judul}</h1><p>${item.subTeks}<br>TAHUN PELAJARAN ${item.tahunFull}</p></div>
+                                <div class="card-body">
+                                    <div class="photo-area">
+                                        <div class="photo-box"><img src="${item.foto}"></div>
+                                        <div class="jabatan-badge">${item.jabatan}</div>
                                     </div>
+                                    <div class="info-area">
+                                        <div class="info-name">${item.nama}</div>
+                                        <div class="info-nip">NIP/ID: ${item.nip}</div>
+                                        <div class="info-id-unik">ID: ${item.idUnik}</div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="valid-thru">Masa Berlaku: Selama Kegiatan ${item.kegiatan} ${item.tahunMasa}</div>
+                                    <div class="footer-logo-area"><img src="${logoData}" class="custom-logo"><div class="footer-brand">PANITIA PELAKSANA</div></div>
                                 </div>
                             </div>
-
-                            <!-- SISI BELAKANG -->
+                            <!-- BELAKANG B3 LUXURY -->
                             <div class="id-card back-side ${item.tema}" id="back-${item.id}">
+                                <div class="luxury-dots" style="opacity: 0.5;"></div>
                                 <img src="${logoData}" class="watermark">
-                                
-                                <div class="back-header">
-                                    <h3>SOP & KETENTUAN</h3>
-                                    <p>TATA TERTIB PANITIA</p>
-                                </div>
-
-                                <div class="back-content">
-                                    <ol>
-                                        <li>Memakai ID Card ini selama berada di area pelaksanaan ujian TKA.</li>
-                                        <li>ID Card ini merupakan tanda pengenal resmi dan tidak dapat dipindahtangankan.</li>
-                                        <li>Menjaga kerahasiaan dokumen, kelancaran, dan ketertiban ruang ujian.</li>
-                                        <li>Menjalankan tugas pokok sesuai instruksi Penanggung Jawab TKA.</li>
-                                    </ol>
-                                    
-                                    <div class="qr-placeholder">
-                                        <img src="${qrUrl}" alt="QR Validasi">
-                                        <div style="font-size:7px; margin-top:2px; font-weight:bold;">SCAN VALIDASI</div>
+                                <div class="back-header"><h3>TATA TERTIB PANITIA ${item.kegiatan}</h3></div>
+                                <div class="back-main">
+                                    <div class="back-content">
+                                        <ol>
+                                            <li>ID Card wajib dipakai selama kegiatan berlangsung di lingkungan sekolah.</li>
+                                            <li>Menjaga kerahasiaan dokumen, kelancaran, dan integritas kegiatan.</li>
+                                            <li>Dilarang memindahtangankan kartu ini kepada orang lain.</li>
+                                            <li>Melaksanakan tugas sesuai instruksi Penanggung Jawab.</li>
+                                        </ol>
                                     </div>
+                                    <div class="qr-placeholder"><img src="${qrUrl}"><div style="font-size:7px; font-weight:bold; margin-top:3px;">SCAN VALIDASI</div></div>
                                 </div>
-
-                                <div class="back-footer">
-                                    <strong>PENTING:</strong><br>
-                                    Barang siapa menemukan kartu ini harap mengembalikan ke Sekretariat TKA terdekat.
-                                </div>
+                                <div class="back-footer"><strong>PENTING:</strong> Kembalikan ke Sekretariat Panitia ${item.judul} jika ditemukan.</div>
                             </div>
                         </div>
                     </div>
@@ -697,10 +505,8 @@
         }
 
         function gantiTemaKartu(id, temaBaru) {
-            const frontCard = document.getElementById('front-' + id);
-            const backCard = document.getElementById('back-' + id);
-            frontCard.className = 'id-card ' + temaBaru;
-            backCard.className = 'id-card back-side ' + temaBaru;
+            document.getElementById('front-' + id).className = 'id-card ' + temaBaru;
+            document.getElementById('back-' + id).className = 'id-card back-side ' + temaBaru;
             const index = listData.findIndex(item => item.id === id);
             if(index !== -1) listData[index].tema = temaBaru;
         }
@@ -711,11 +517,7 @@
         }
 
         function resetDaftar() {
-            if(confirm("Apakah Anda yakin ingin menghapus semua kartu?")) {
-                listData = [];
-                cardCounter = 0;
-                renderKartu();
-            }
+            if(confirm("Hapus semua data dalam daftar?")) { listData = []; cardCounter = 0; renderKartu(); }
         }
     </script>
 </body>
